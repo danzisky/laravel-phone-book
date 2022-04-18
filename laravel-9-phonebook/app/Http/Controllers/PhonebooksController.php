@@ -7,7 +7,6 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\AssignOp\Concat;
 
 class PhonebooksController extends Controller
 {
@@ -16,21 +15,11 @@ class PhonebooksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        //
         if(Auth::check()) {
-            $phonebook = Phonebook::where('id', $id)->get();            
-            $user_id = Auth::user()->id;
-            $contacts = [];
-            $errors = array();
-            if($phonebook['user_id'] != $user_id) {
-                $error = 'sorry you are not auhtorized to manage this phonebook and its assets';
-                array_push($errors, $error);
-            } else {
-                $contacts = Contact::where('phonebook_id', $id)->all();
-            }
-            return view('contact.contacts', ['user' => Auth::user(), 'phonebook' => $phonebook, 'contacts' => $contacts, 'errors', $errors]);            
+            $phonebooks = Phonebook::all();
+            return view('phonebook.phonebooks', ['user' => Auth::user(), 'phonebooks' => $phonebooks]);            
         } else {
             return route('login');
         }
@@ -96,7 +85,25 @@ class PhonebooksController extends Controller
      */
     public function show($id)
     {
-        //
+        if(Auth::check()) {
+            $phonebook = Phonebook::where('id', $id)->get();
+            $phonebook = $phonebook[0];          
+            $user_id = Auth::user()->id;
+            $contacts = [];
+            $errors = array();
+            if(!isset($phonebook[0]['id']) || !isset($phonebook['user_id'])) {
+                $error = 'sorry the phonebook could not ne found';
+            }elseif($phonebook[0]['user_id'] != $user_id) {
+                $error = 'sorry you are not auhtorized to manage this phonebook and its assets';
+                array_push($errors, $error);
+            } else {
+                $contacts = Contact::where('phonebook_id', $id)->all();
+            }
+            return view('contact.contacts', ['user' => Auth::user(), 'phonebook' => $phonebook, 'contacts' => $contacts, 'errors', $errors]);   
+            echo 'reached';         
+        } else {
+            return route('login');
+        }
     }
 
     /**

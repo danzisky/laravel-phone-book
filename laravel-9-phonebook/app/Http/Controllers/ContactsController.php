@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Contact;
+use App\Models\Phonebook;
+use Illuminate\Support\Facades\Auth;
 
 class ContactsController extends Controller
 {
@@ -13,7 +16,12 @@ class ContactsController extends Controller
      */
     public function index()
     {
-        //
+        if(Auth::check()) {
+            $phonebooks = Phonebook::all();
+            return view('phonebook.phonebooks', ['user' => Auth::user(), 'phonebooks' => $phonebooks]);            
+        } else {
+            return route('login');
+        }
     }
 
     /**

@@ -33,41 +33,49 @@
 
             foreach ($phonebooks as $phonebook) {
                 ?>
-                <form action="/phonebooks/<?php echo $phonebook['id']; ?>" method="GET" class="w3-form"/>
-                    <button value="<?php echo $phonebook['id']; ?> " class="w3-button w3-light-grey w3-left-align">
-                        <div><h3><?php echo $phonebook['phonebook_name']; ?></h3></div>
-                        <div><h5><?php echo $phonebook['phonebook_description']; ?></h5></div>
-                        
-                        
-                    </button>
-                    
-                    <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
-                    <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
-                </form>
-                <div class="w3-small w3-margin w3-text-hover-blue w3-text-blue"><a href="<?php echo $url.$phonebook['id']; ?>" target="_blank">VIEW PHONEBOOK THROUGH LINK</a></div>
-                <div>
-                    <form action="edit_phonebook.php" method="POST" class="w3-form"/>
-                        <button name="submit" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-grey w3-left-align">EDIT</button>
-                        <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
-                        <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
-                    </form>
-                    <div class="share<?php echo $phonebook['id']; ?>" name="<?php echo $phonebook['id']; ?>" id="<?php echo $phonebook['id']; ?>">
-                    
-                        <button id="<?php echo 'makeprivate'.$phonebook['id']; ?>" value="1" pb_id="<?php echo $phonebook['id']; ?>" user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-green w3-left-align public w3-margin-bottom" style="<?php echo ($phonebook['public'] == "1" ? '' : 'display:none;'); ?>" onclick="makePrivate(this)">MAKE PRIVATE</button>
-
-                        <button id="<?php echo 'makepublic'.$phonebook['id']; ?>" value="0" pb_id="<?php echo $phonebook['id']; ?>"  user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-yellow w3-left-align private w3-margin-bottom" style="<?php echo ($phonebook['public'] == "0" ? '' : 'display:none;'); ?>" onclick="makePublic(this)">MAKE PUBLIC</button>
-                        
-                        <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
-                        <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
+                <div class=" w3-padding w3-row-padding w3-white w3-margin-bottom">
+                    <div class="w3-col s12 m4 w3-white w3-margin-bottom w3-row">
+                        <a href="/phonebooks/<?php echo $phonebook['id']; ?>" method="GET" class="w3-col s12"/>
+                            @csrf
+                            <button value="<?php echo $phonebook['id']; ?> " class="w3-button w3-light-grey w3-left-align">
+                                <div><h3><?php echo $phonebook['phonebook_name']; ?></h3></div>
+                                <div><h5><?php echo $phonebook['phonebook_description']; ?></h5></div>
+                                
+                                
+                            </button>
+                            
+                            <!-- <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
+                            <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" /> -->
+                        </a>
+                        <div class="w3-col s12 w3-small w3-margin w3-text-hover-blue w3-text-blue"><a href="<?php echo $url.$phonebook['id']; ?>" target="_blank">VIEW PHONEBOOK THROUGH LINK</a></div>
                     </div>
-                    <form action="phonebooks/delete_phonebook.php" method="POST" class="w3-form"/>
-                        <button name="delete" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-red w3-left-align">
-                            DELETE
-                        </button>
-                        <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
-                        <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
-                    </form>
+                    <div class="w3-row-padding w3-col s12 m8">
+                        <form action="edit_phonebook.php" method="POST" class="w3-col s12 m4"/>
+                            @csrf
+                            <button name="submit" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>
+                            <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
+                            <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
+                        </form>
+                        <div class="share<?php echo $phonebook['id']; ?> w3-col s12 m4" name="<?php echo $phonebook['id']; ?>" id="<?php echo $phonebook['id']; ?>">
+                        
+                            <button id="<?php echo 'makeprivate'.$phonebook['id']; ?>" value="1" pb_id="<?php echo $phonebook['id']; ?>" user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-green w3-left-align public w3-margin-bottom" style="<?php echo ($phonebook['public'] == "1" ? '' : 'display:none;'); ?>" onclick="makePrivate(this)">MAKE PRIVATE</button>
+
+                            <button id="<?php echo 'makepublic'.$phonebook['id']; ?>" value="0" pb_id="<?php echo $phonebook['id']; ?>"  user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-yellow w3-left-align private w3-margin-bottom" style="<?php echo ($phonebook['public'] == "0" ? '' : 'display:none;'); ?>" onclick="makePublic(this)">MAKE PUBLIC</button>
+                            
+                            <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
+                            <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
+                        </div>
+                        <form action="phonebooks/delete_phonebook.php" method="POST" class="w3-form w3-col s12 m4"/>
+                            @csrf
+                            <button name="delete" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-red w3-left-align">
+                                DELETE
+                            </button>
+                            <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
+                            <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
+                        </form>
+                    </div>
                 </div>
+                
                 <hr>
 
                 <?php
