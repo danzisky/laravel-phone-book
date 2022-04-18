@@ -22,8 +22,9 @@ Route::get('/', function () {
 
 
 Route::resource('phonebooks', PhonebooksController::class)->middleware('auth');
-Route::resource('contact', ContactsController::class)->middleware('auth');
-
+Route::resource('phonebooks/{id}/contacts', ContactsController::class)->middleware('auth');
+//Route::resource('contacts', ContactsController::class)->middleware('auth');
+Route::get('phonebooks/{pb_id}/contact/create', [ContactsController::class, 'createContact']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');

@@ -8,10 +8,10 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                @if(count($errors) > 0)
-                    @foreach($errors as $error)
+                @if(isset($messages[0]['message']))
+                    @foreach($messages as $message)
                         <div class="p-6 w3-green w3-text-white-800 border-b border-gray-200">
-                            Message: {{ $error }}
+                            <div>{{ $message['message'] }}</div>
                         </div>
                     @endforeach
                 @endif
@@ -25,16 +25,17 @@
             $url = 'http://'.$base_url.$location;
 
             echo '<div class="w3-xxlarge w3-panel">Welcome '.$user['name'].'</div>';
-            echo '<div class="w3-xxlarge w3-panel">Created Phonebooks</div>';
+            echo '<div class="w3-xlarge w3-panel">your phonebooks</div>';
 
             if(empty($phonebooks) || is_null($phonebooks)) {
                 echo '<div class="w3-medium w3-panel w3-center">No Phone Book created yet</div>';
             }
+            echo '<div class="w3-margin-bottom"><a href="/phonebooks/create"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW PHONEBOOK"/></a></div>';
 
             foreach ($phonebooks as $phonebook) {
                 ?>
                 <div class=" w3-padding w3-row-padding w3-white w3-margin-bottom">
-                    <div class="w3-col s12 m4 w3-white w3-margin-bottom w3-row">
+                    <div class="w3-col s12 m4 w3-white w3-row">
                         <a href="/phonebooks/<?php echo $phonebook['id']; ?>" method="GET" class="w3-col s12"/>
                             @csrf
                             <button value="<?php echo $phonebook['id']; ?> " class="w3-button w3-light-grey w3-left-align">
@@ -82,23 +83,8 @@
             }
 
             ?>
-            <div class="w3-container w3-responsive w3-row w3-centre w3-margin-bottom">
-                <h3>Create a new Phone Book</h3>
-                <form action="/phonebooks" method="POST">
-                    @csrf
-                    <div class="w3-row_ w3-responsive">
-                        <div class="w3-block w3-col s12 m9 l6">
-                            <input name='name' class="w3-input" type="text" required placeholder="Phonebook Name" />
-                        </div>
-                        <input name='user_id' hidden type="hidden" value="<?php echo $user['id'] ?>" />
-                        <br/>
-                        <div class="w3-block w3-col w3-third w3-col s12 m9 l7">
-                            <textarea name='description' type="text" placeholder="note" class="w3-input"></textarea>
-                        </div>
-                        <br>
-                        <div class="w3-col"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW PHONEBOOK"/></div>
-                    </div>
-                </form>
+            
+                
             </div>
             <br/>
             
