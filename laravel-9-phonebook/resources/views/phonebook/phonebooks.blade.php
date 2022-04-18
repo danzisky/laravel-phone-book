@@ -30,13 +30,13 @@
             if(empty($phonebooks) || is_null($phonebooks)) {
                 echo '<div class="w3-medium w3-panel w3-center">No Phone Book created yet</div>';
             }
-            echo '<div class="w3-margin-bottom"><a href="/phonebooks/create"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW PHONEBOOK"/></a></div>';
+            echo '<div class="w3-margin-bottom"><a href="'.route('phonebooks.create').'"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW PHONEBOOK"/></a></div>';
 
             foreach ($phonebooks as $phonebook) {
                 ?>
                 <div class=" w3-padding w3-row-padding w3-white w3-margin-bottom">
                     <div class="w3-col s12 m4 w3-white w3-row">
-                        <a href="/phonebooks/<?php echo $phonebook['id']; ?>" method="GET" class="w3-col s12"/>
+                        <a href="{{ route('phonebooks.contacts.index', ['phonebook' => $phonebook['id']]) }}" method="GET" class="w3-col s12"/>
                             @csrf
                             <button value="<?php echo $phonebook['id']; ?> " class="w3-button w3-light-grey w3-left-align">
                                 <div><h3><?php echo $phonebook['phonebook_name']; ?></h3></div>

@@ -35,14 +35,14 @@
             $link = 'http://'.$url;
 
             echo '<div class="w3-xxlarge w3-panel">Logged in as '.$user['name'].'</div>';
-            echo '<div class="w3-xxlarge w3-panel">'.$phonebook['phonebook_name'].': Added Contacts</div>';
+            echo '<div class="w3-xxlarge w3-panel">'.$phonebook['phonebook_name'].$phonebook_id.': Added Contacts</div>';
 
             echo '<div class="w3-large w3-panel"><div>To share this phonebook, use this link</div>';
             echo '<div class="w3-text-blue w3-link w3-medium">'.$link.'</div></div>'; 
 
-            echo '<div class="w3-margin-bottom"><a href="/phonebooks/'.$phonebook['id'].'/contact/create"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW CONTACT"/></a></div>';
+            echo '<div class="w3-margin-bottom"><a href="'. route('phonebooks.contacts.create', ['phonebook' => $phonebook['id']]).'"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW CONTACT"/></a></div>';
 
-            echo '<a href="/phonebooks"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOKS</button></a>';
+            echo '<a href="'.route('phonebooks.index').'"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOKS</button></a>';
             echo '<br>';
             
             if(empty($contacts) || is_null($contacts)) {
@@ -51,7 +51,8 @@
 
             foreach ($contacts as $contact) {
                 ?>
-                <form action="contact.php" method="GET"/>
+                <a href="{{ route('contacts.show', ['contact' => $contact['id']]) }}"/>
+                    @csrf
                     <button value="<?php echo $contact['id']; ?>" class="w3-button w3-light-grey w3-left-align">
                         <div><h3><?php echo $contact['first_name']." ".$contact['last_name']; ?></h3></div>
                         <div><h5><?php echo isset($contact['email']) ? "E-mail: ".$contact['email'] : ""; ?></h5></div>
@@ -59,7 +60,7 @@
                     </button>
                     <input name='user_id' hidden type="hidden" value="<?php echo $user['user_id']; ?>" />
                     <input name='contact_id' hidden type="hidden" value="<?php echo $contact['id']; ?>" />
-                </form>
+                </a>
                 <div>
                     <form action="edit_contact.php" method="POST" class="w3-form"/>
                         <button value="<?php echo $contact['id']; ?> " class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\Phonebook;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\MessageBag;
 
 class ContactsController extends Controller
@@ -23,16 +25,15 @@ class ContactsController extends Controller
             $user_id = Auth::user()->id;
             $contacts = [];
             $messages = array();
-            if(!isset($phonebook[0]['id']) || !isset($phonebook['user_id'])) {
-                $message = 'sorry the phonebook could not ne found';
-            }elseif($phonebook[0]['user_id'] != $user_id) {
+            if(!isset($phonebook['id']) || !isset($phonebook['user_id'])) {
+                $message = 'sorry the phonebook could not be found';
+            } elseif($phonebook['user_id'] != $user_id) {
                 $message = 'sorry you are not auhtorized to manage this phonebook and its assets';
                 array_push($messages, $message);
             } else {
-                $contacts = Contact::where('phonebook_id', $id)->all();
+                $contacts = Contact::where('phonebook_id', $id)->get();
             }
-            return view('contact.contacts', ['user' => Auth::user(), 'phonebook' => $phonebook, 'contacts' => $contacts, 'messages', $messages]);   
-            echo 'reached';         
+            return view('contact.contacts', ['user' => Auth::user(), 'phonebook' => $phonebook, 'contacts' => $contacts, 'messages', $messages]);        
         } else {
             return route('login');
         }
@@ -64,10 +65,9 @@ class ContactsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request, $phonebook_id)
     {
-        $request->validate([          
-            'phonebook_id' => ['required', 'max:11'],
+        $request->validate([ 
             'first_name' => ['string', 'nullable', 'max:20'],
             'last_name' => ['string', 'nullable', 'max:70'],
             'email' => ['string', 'email', 'nullable', 'max:70'],
@@ -92,22 +92,22 @@ class ContactsController extends Controller
                 $message['message'] = 'please fill at least a name';
 
                 $errors = $error->add('exists', $message['message']);
-                return back()->withErrors($errors)->withInput();
+                return redirect()->route('phonebooks.contacts.create', ['phonebook' => $phonebook_id])->withErrors($errors)->withInput();
             } elseif ((!isset($request->email) && !isset($request->phone)) || (empty($request->email) && empty($request->phone))) {
                 $message = array();
                 $message['status'] = 'error';
                 $message['message'] = 'please fill at least a contact detail';
                 
                 $errors = $error->add('exists', $message['message']);
-                return back()->withErrors($errors)->withInput();
+                return redirect()->route('phonebooks.contacts.create', ['phonebook' => $phonebook_id])->withErrors($errors)->withInput();
             } else {
                 $existingContact = Contact::where([
+                    'phonebook_id' => $phonebook_id,
                     'first_name' => $request->first_name,
                     'last_name' => $request->last_name,
                     'email' => $request->email,
                     'phone' => $request->phone,])->get();
-                
-                $phonebook_id = $request->phonebook_id;
+
                 $phonebook = Phonebook::where('id', $phonebook_id)->get();
                 $phonebook = $phonebook[0];          
                 $user_id = Auth::user()->id;
@@ -117,18 +117,19 @@ class ContactsController extends Controller
                 if(!isset($phonebook['id']) || !isset($phonebook['user_id'])) {
                     $message = array();
                     $message['status'] = 'error';
-                    $message['message'] = 'sorry the phonebook could not ne found '.$phonebook_id;
+                    $message['message'] = 'sorry the phonebook could not be found '.$phonebook_id;
                     array_push($messages, $message);
 
                     $errors = $error->add('exists', $message['message']);
-                    return back()->withErrors($errors)->withInput();
+                    return redirect()->route('phonebooks.contacts.create', ['phonebook' => $phonebook_id])->withErrors($errors)->withInput();;
                 } elseif($phonebook['user_id'] != $user_id) {
                     $message = array();
                     $message['status'] = 'error';
                     $message['message'] = 'sorry you are not auhtorized to manage this phonebook and its assets';
                     array_push($messages, $message);
                     $errors = $error->add('exists', $message['message']);
-                    return back()->withErrors($errors)->withInput();
+                    // return back()->withErrors($errors)->withInput();
+                    return redirect()->route('phonebooks.contacts.create', ['phonebook' => $phonebook_id])->withErrors($errors)->withInput();
                 } elseif(isset($existingContact[0]['id']) || isset($existingContact['id'])) {
                     $message = array();
                     $message['status'] = 'error';
@@ -136,11 +137,12 @@ class ContactsController extends Controller
                     array_push($messages, $message);
 
                     $errors = $error->add('exists', $message['message']);
-                    return back()->withErrors($errors)->withInput();
+                    // return back()->withErrors($errors)->withInput();
+                    return redirect()->route('phonebooks.contacts.create', ['phonebook' => $phonebook_id])->withErrors($errors)->withInput();
                 } else {
                     $contact = Contact::create([
                         'user_id' => $user_id,          
-                        'phonebook_id' => $request->phonebook_id,
+                        'phonebook_id' => $phonebook_id,
                         'first_name' => $request->first_name,
                         'last_name' => $request->last_name,
                         'email' => $request->email,
@@ -156,11 +158,12 @@ class ContactsController extends Controller
                     if(!$contact) {
                         $message = array();
                         $message['status'] = 'error';
-                        $message['message'] = 'An unknown error occurred, phonebook could not be created. Pleasse try again later';
+                        $message['message'] = 'An unknown error occurred, contact could not be created. Pleasse try again later';
                         array_push($messages, $message);
 
                         $errors = $error->add('exists', $message['message']);
-                        return back()->withErrors($errors)->withInput();
+                        // return back()->withErrors($errors)->withInput();
+                        return redirect()->route('phonebooks.contacts.create', ['phonebook' => $phonebook_id])->withErrors($errors)->withInput();
                     } else {
                         $message = array();
                         $message['status'] = 'success';
@@ -186,8 +189,34 @@ class ContactsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
+    {   
+        if(Auth::check()) {
+            $contact = Contact::where('id', $id)->get();
+            $contact = $contact[0];          
+            $user_id = Auth::user()->id;
+            $messages = array();
+            if(!isset($contact['id']) || !isset($contact['user_id'])) {
+                $message = array();
+                $message['status'] = "error";
+                $message = 'sorry the contact could not be found';
+            }elseif($contact['user_id'] != $user_id) {
+                $message = array();
+                $message['status'] = "error";
+                $message = 'sorry you are not auhtorized to manage view and manage this contact';
+                array_push($messages, $message);
+            } else {
+                $phonebook = Phonebook::where('id', $contact['phonebook_id'])->get();
+                $phonebook = $phonebook[0];
+                $user = User::where('id', $contact['user_id'])->get();
+                $user = $user[0];
+            }
+            return view('contact.contact', ['user' => $user, 'phonebook' => $phonebook, 'contact' => $contact, 'messages' => $messages]);        
+        } else {
+            return route('login');
+        }
+        
+        
+        
     }
 
     /**

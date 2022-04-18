@@ -41,12 +41,12 @@
             echo '<div class="w3-large w3-panel"><div>To share this phonebook, use this link</div>';
             echo '<div class="w3-text-blue w3-link w3-medium">'.$link.'</div></div>'; 
 
-            echo '<a href="account.php"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOKS</button></a>';
+            echo '<a href="'.route('phonebooks.contacts.index', ['phonebook' => $phonebook_id]).'"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOK</button></a>';
             echo '<br>';
             ?>
             <div  class="w3-margin-top w3-padding-bottom">
                 <h3>Add New Contact</h3>
-                <form action="/contacts" method="POST">
+                <form action="{{ route('phonebooks.contacts.store', ['phonebook' => $phonebook['id']]) }}" method="POST">
                     @csrf
                     <input class="w3-input w3-block w3-margin-right contact-info w3-col_ w3-twothird w3-responsive s12 m4 l3" name='first_name' type="text" placeholder="First Name" />
                     <input class="w3-input w3-block w3-margin-right contact-info w3-col_ w3-twothird w3-responsive s12 m4 l3" name='last_name' type="text" placeholder="Last Name" />

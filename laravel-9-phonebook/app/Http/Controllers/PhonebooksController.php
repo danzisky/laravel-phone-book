@@ -53,7 +53,9 @@ class PhonebooksController extends Controller
             $user_id = Auth::user()->id;
             $name = $request->name;
             $description = $request->description;
-            $existingPB = Phonebook::where('phonebook_name', $name)->get();
+            $existingPB = Phonebook::where(['phonebook_name' => $name,
+                    'user_id' => $user_id,
+                ])->get();
             $messages = array();
             $error = new MessageBag;
             if(isset($existingPB[0]['id']) || isset($existingPB['id'])) {
@@ -76,7 +78,7 @@ class PhonebooksController extends Controller
                     $message['status'] = "error";
                     $message['message'] = 'An unknown error occurred, phonebook could not be created. Pleasse try again later';
                     array_push($messages, $message);
-                    
+
                     $errors = $error->add('exists', $message['message']);
                     return back()->withErrors($errors)->withInput();
                 } else {
