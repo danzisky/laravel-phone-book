@@ -1,48 +1,43 @@
-<?php
-    use Illuminate\Support\Facades\Auth;
-?>
-
-<x-app-layout>
-    <x-slot name="header">
+@extends('layouts.app2')
+@section('header')
+    <div name="header">
+        @if($access == true)
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ $user['name'] }}'s Shared Contact
         </h2>
-    </x-slot>
+        @endif
+        @if($access != true)
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Contact could not be retrieved
+        </h2>
+        @endif
+    </div>
+@endsection
 
+@section('slot')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 
                 <?php
                 echo '<div class="w3-container">';
-                $user_id = $user['id'];
+                isset($user['id']) ? $user_id = $user['id'] : '';
                 if(isset($user_id)) {
-
-                    if (isset(Auth::user()->id)) {
-                        echo '<div class="w3-xxlarge w3-panel">Logged in as '.$user['first_name'].'</div>';
-                    } else {
-                        echo '<div class="w3-xxlarge w3-panel">Viewing '.$user['first_name'].'\'s Phonebook</div>';
-                    }
-                    echo '<div class="w3-xxlarge w3-panel">'.$phonebook['phonebook_name'].'</div>';
-
-                    echo '<a href="'.route('phonebooks.contacts.index', ['phonebook' => $phonebook['id']]).'"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO CONTACTS</button></a>';
-
-                    echo '<div class="w3-xxlarge w3-panel">Contact Details for '.$contact['first_name'].' '.$contact['last_name'].'</div>';
-
-                    if (isset($_SESSION['user_id'])) {
-                    echo '<a href="phonebook.php"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOK</button></a>';
-                    }    
-                    echo '<br>';
                     
-                    if($contact['hidden'] == 1 || $contact['hidden'] == "1") {
-                        echo '<div class="w3-medium w3-panel w3-text-yellow">This contact can be seen in public phonebook</div>';
-                    } else {
-                        echo '<div class="w3-medium w3-panel w3-text-green">This contact is hidded from others in phonebook</div>';
-                    }
+                    echo $access == true ? '<div class="w3-xxlarge w3-panel">'.$phonebook['phonebook_name'].'</div>' : '';
+
+                    echo $access == true ? '<a href="'.route('phonebook', ['id' => $phonebook['id']]).'"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOK</button></a>' : '';
+
+                    echo $access == true ? '<div class="w3-xlarge w3-panel">Contact Details for '.$contact['first_name'].' '.$contact['last_name'].'</div>' : '';
+                    echo '<br>';
 
                     ?>
+                    @if($access == true)
                     <div  class="w3-margin-top w3-padding-bottom">
                         <h3>Contact Details</h3>
+                        <div class="w3-form"/>
+                            <button onclick="alert('contact saved :)')" class="w3-button w3-grey w3-left-align w3-margin-bottom">SAVE CONTACT</button>
+                        </div>
                         <div class="w3-container">
                             <div class="w3-div w3-panel w3-margin-right contact-info w3-col_ w3-twothird w3-responsive s12 m4 l3">First name : <?php echo $contact['first_name']; ?></div>
                             <div class="w3-div w3-panel w3-margin-right contact-info w3-col_ w3-twothird w3-responsive s12 m4 l3">Last Name : <?php echo $contact['last_name']; ?></div>
@@ -58,6 +53,7 @@
                             <div class="w3-div w3-panel w3-margin-right contact-info w3-col_ w3-twothird w3-responsive s12 m4 l3" >Group : <?php echo $contact['contact_group']; ?></div>
                         </div>
                     </div>
+                    @endif
                     <br/>
 
 
@@ -69,5 +65,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
-
+@endsection

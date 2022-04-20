@@ -7,22 +7,10 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                @if(isset($messages[0]['message']))
-                    @foreach($messages as $message)
-                        <div class="p-6 w3-green w3-text-white-800 border-b border-gray-200">
-                            <div>{{ $message['message'] }}</div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
+            
             <?php
             $phonebooks = $phonebooks;
-            $current_url = $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-            $location = 'phonebooks/shared/?phonebook_id=';
-            $index = strpos($current_url, 'account.php');
-            $base_url = substr($current_url, 0, $index);
-            $url = 'http://'.$base_url.$location;
+            
 
             echo '<div class="w3-xxlarge w3-panel">Welcome '.$user['name'].'</div>';
             echo '<div class="w3-xlarge w3-panel">your phonebooks</div>';
@@ -45,20 +33,15 @@
                                 
                             </button>
                             
-                            <!-- <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
-                            <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" /> -->
                         </a>
-                        <div class="w3-col s12 w3-small w3-margin w3-text-hover-blue w3-text-blue"><a href="<?php echo $url.$phonebook['id']; ?>" target="_blank">VIEW PHONEBOOK THROUGH LINK</a></div>
+                        <div class="w3-col s12 w3-small w3-margin w3-text-hover-blue w3-text-blue"><a href="<?php echo route('phonebook', ['id' => $phonebook['id']]); ?>" target="_blank">VIEW PHONEBOOK THROUGH LINK</a></div>
                     </div>
                     <div class="w3-row-padding w3-col s12 m8">
-                        <form action="edit_phonebook.php" method="POST" class="w3-col s12 m4"/>
-                            @csrf
-                            <button name="submit" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>
-                            <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
-                            <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
+                        <form action="{{ route('phonebooks.edit', ['phonebook' => $phonebook['id']]) }}" method="GET" class="w3-col s12 m4"/>
+                            <button type="submit" class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>
                         </form>
                         <div class="share<?php echo $phonebook['id']; ?> w3-col s12 m4" name="<?php echo $phonebook['id']; ?>" id="<?php echo $phonebook['id']; ?>">
-                        
+                            @csrf
                             <button id="<?php echo 'makeprivate'.$phonebook['id']; ?>" value="1" pb_id="<?php echo $phonebook['id']; ?>" user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-green w3-left-align public w3-margin-bottom" style="<?php echo ($phonebook['public'] == "1" ? '' : 'display:none;'); ?>" onclick="makePrivate(this)">MAKE PRIVATE</button>
 
                             <button id="<?php echo 'makepublic'.$phonebook['id']; ?>" value="0" pb_id="<?php echo $phonebook['id']; ?>"  user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-yellow w3-left-align private w3-margin-bottom" style="<?php echo ($phonebook['public'] == "0" ? '' : 'display:none;'); ?>" onclick="makePublic(this)">MAKE PUBLIC</button>
@@ -66,8 +49,9 @@
                             <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
                             <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
                         </div>
-                        <form action="phonebooks/delete_phonebook.php" method="POST" class="w3-form w3-col s12 m4"/>
+                        <form action="{{ route('phonebooks.destroy', ['phonebook' => $phonebook['id']]) }}" method="POST" class="w3-form w3-col s12 m4"/>
                             @csrf
+                            @method('delete')
                             <button name="delete" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-red w3-left-align">
                                 DELETE
                             </button>
@@ -88,22 +72,30 @@
             </div>
             <br/>
             
-            <script src="scripts/jquery.min.js"></script>
+            <script src="{{ asset('js/jquery.min.js') }}"></script>
             <script>
                 function changePublicity(action, phonebook_id, user_id) {
-                    var phonebook_id = phonebook_id
-                    $.post("phonebooks/share_phonebook.php",
-                        {
+                    var phonebook_id = phonebook_id;
+                    var data = {
                             phonebook_id: phonebook_id,
                             user_id: user_id,
-                            action: action
-                        },
-                        function(data, status){					
-                            data = JSON.parse(data);
-                            messenger(data, phonebook_id);
-                            console.log("stop1");
+                            action: action,
                         }
-                    );
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('publicity') }}",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(phonebook_id);
+                            messenger(response, phonebook_id);
+                        }
+                    });
                     function messenger(data, phonebook_id) {
                         togglePrivacy(phonebook_id, data.data.is_public);                
                         alert(data.message);
@@ -114,14 +106,14 @@
                     var phonebook_id = element.getAttribute('pb_id');
                     var user_id = element.getAttribute('user_id');
                     var action = "unshare";
-                    //console.log(element);
+                    console.log(element);
                     changePublicity(action, phonebook_id, user_id);
                 }
                 function makePublic(element){
                     var phonebook_id = element.getAttribute('pb_id');
                     var user_id = element.getAttribute('user_id');
                     var action = "share";
-                    //console.log(element);
+                    console.log(element);
                     changePublicity(action, phonebook_id, user_id);
                 }
                 function toggle(id) {
@@ -148,22 +140,9 @@
                         is_public = false;
                     }
                     if (is_public == true) {
-                        /*y.className = y.className.replace(" w3-hide", " w3-show");
-                        if (y.className.indexOf("w3-show") == -1) {                    
-                            y.className += " w3-show";
-                            x.className = x.className.replace(" w3-show", "");
-                            x.className.indexOf("w3-hide") == -1 ? x.className += 'w3-hide' : x.className += '';
-                                                
-                        }*/
                         y.style.display = 'block';
                         x.style.display = 'none';
                     } else if (is_public == false) { 
-                        /*x.className = x.className.replace(" w3-hide", " w3-show");
-                        if (x.className.indexOf("w3-show") == -1) {                    
-                            x.className += " w3-show";
-                            y.className = x.className.replace(" w3-show", "");
-                            y.className.indexOf("w3-hide") == -1 ? x.className += 'w3-hide' : x.className += '';                    
-                        }*/
                         x.style.display = 'block';
                         y.style.display = 'none';
                     }

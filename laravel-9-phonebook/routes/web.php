@@ -23,7 +23,10 @@ Route::get('/', function () {
 
 Route::resource('phonebooks', PhonebooksController::class)->middleware('auth');
 Route::resource('phonebooks.contacts', ContactsController::class)->shallow()->middleware('auth');
-// Route::get('phonebooks/{pb_id}/contact/create', [ContactsController::class, 'createContact']);
+Route::post('phonebooks/publicity', [PhonebooksController::class, 'changePublicity'])->name('publicity');
+Route::post('contacts/visibility', [ContactsController::class, 'changeVisibility'])->name('visibility');
+Route::get('phonebook/{id}', [PhonebooksController::class, 'getPhonebook'])->name('phonebook');
+Route::get('contact/{id}', [ContactsController::class, 'getContact'])->name('contact');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');

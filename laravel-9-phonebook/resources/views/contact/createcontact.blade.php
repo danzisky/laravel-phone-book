@@ -7,22 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                @if($errors->any())
-                    @foreach($errors->all() as $error)
-                        <div class="p-6 w3-red w3-text-white-800 border-b border-gray-200">
-                            <div>{{ $error }}</div>
-                        </div>
-                    @endforeach
-                @endif
-                @if(isset($messages[0]['message']))
-                    @foreach($messages as $message)
-                        <div class="p-6 w3-amber w3-text-white-800 border-b border-gray-200">
-                            <div>{{ $message['message'] }}</div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
+            
             <?php           
 
             // $user = Auth::user();
