@@ -34,10 +34,10 @@
                     }    
                     echo '<br>';
                     
-                    if($contact['hidden'] == 1 || $contact['hidden'] == "1") {
-                        echo '<div class="w3-medium w3-panel w3-text-yellow">This contact can be seen in public phonebook</div>';
+                    if($contact['hidden'] != 1 || $contact['hidden'] != "1") {
+                        echo '<div class="w3-medium w3-panel w3-padding w3-yellow">This contact can be seen in public phonebook</div>';
                     } else {
-                        echo '<div class="w3-medium w3-panel w3-text-green">This contact is hidded from others in phonebook</div>';
+                        echo '<div class="w3-medium w3-panel w3-padding w3-green">This contact is hidded from others in phonebook</div>';
                     }
 
                     ?>

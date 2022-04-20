@@ -13,24 +13,14 @@
             // $user = Auth::user();
             $phonebook = $phonebook;
             $phonebook_id = $phonebook['id'];
-            $current_url = $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-            $location = 'phonebooks/shared/?phonebook_id=';
-            $index = strpos($current_url, 'phonebook.php');
-            $base_url = substr($current_url, 0, $index);
-            $url = $base_url.$location.$phonebook_id;
-            $link = 'http://'.$url;
-
-            echo '<div class="w3-xxlarge w3-panel">Logged in as '.$user['name'].'</div>';
-            echo '<div class="w3-xxlarge w3-panel">'.$phonebook['phonebook_name'].': Add Contacts</div>';
-
-            echo '<div class="w3-large w3-panel"><div>To share this phonebook, use this link</div>';
-            echo '<div class="w3-text-blue w3-link w3-medium">'.$link.'</div></div>'; 
+            
+            echo '<div class="w3-xlarge w3-panel">'.$phonebook['phonebook_name'].': Add Contacts</div>';
 
             echo '<a href="'.route('phonebooks.contacts.index', ['phonebook' => $phonebook_id]).'"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOK</button></a>';
             echo '<br>';
             ?>
             <div  class="w3-margin-top w3-padding-bottom">
-                <h3>Add New Contact</h3>
+                <h3>Edit Contact</h3>
                 <form action="{{ route('contacts.update', ['contact' => $contact['id']]) }}" method="POST">
                     @csrf
                     @method('PUT')

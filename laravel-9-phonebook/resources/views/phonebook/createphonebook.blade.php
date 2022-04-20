@@ -9,8 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             <?php
-
-            echo '<div class="w3-xxlarge w3-panel">Welcome '.$user['name'].'</div>';
+            
             echo '<a href="'.route('phonebooks.index').'"><div class="w3-col"><input class="w3-button w3-light-grey w3-border-grey w3-center w3-margin-top" name="submit" type="submit" value="BACK TO PHONEBOOKS"/></div></a>';
             
 

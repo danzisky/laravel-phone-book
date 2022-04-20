@@ -33,22 +33,27 @@
             }
 
             ?>
-            @foreach ($contacts as $contact)
-                <a href="{{ route('contact', ['id' => $contact['id']]) }}"/>
-                    @csrf
-                    <button value="<?php echo $contact['id']; ?>" class="w3-button w3-light-grey w3-left-align">
-                        <div><h3><?php echo $contact['first_name']." ".$contact['last_name']; ?></h3></div>
-                        <div><h5><?php echo isset($contact['email']) ? "E-mail: ".$contact['email'] : ""; ?></h5></div>
-                        <div><h5><?php echo isset($contact['phone']) ? "Mobile Number: ".$contact['phone'] : ""; ?></h5></div>
-                    </button>
-                </a>
-                <div>
-                    <div class="w3-form"/>
-                        <button onclick="alert('contact saved :)')" class="w3-button w3-grey w3-left-align w3-margin-bottom">SAVE</button>
+            <div class="w3-row-padding w3-white"></div>
+                @foreach ($contacts as $contact)
+                    <div class="w3-col s12 m6 l4">
+                        <div>
+                            <div class="w3-form"/>
+                                <button onclick="alert('contact saved :)')" class="w3-button w3-green w3-left-align w3-margin-bottom">SAVE</button>
+                            </div>
+                        </div>
+                        <a href="{{ route('contact', ['id' => $contact['id']]) }}"/>
+                            @csrf
+                            <button value="<?php echo $contact['id']; ?>" class="w3-button w3-light-grey w3-left-align">
+                                <div><h3><?php echo $contact['first_name']." ".$contact['last_name']; ?></h3></div>
+                                <div><h5><?php echo isset($contact['email']) ? "E-mail: ".$contact['email'] : ""; ?></h5></div>
+                                <div><h5><?php echo isset($contact['phone']) ? "Mobile Number: ".$contact['phone'] : ""; ?></h5></div>
+                            </button>
+                        </a>
+                        
+                        <hr>
                     </div>
-                </div>
-                <hr>
-            @endforeach     
+                @endforeach 
+            </div>    
         @endif
         </div>
     </div>

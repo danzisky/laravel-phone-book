@@ -13,5 +13,17 @@
                 </div>
             </div>
         </div>
+
+        <br>
+
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <a href="{{ route('phonebooks.index') }}">
+                <div class="bg-green overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 w3-light-grey w3-hover-light-blue w3-leftbar border-b w3-border-blue">
+                        View your phonebooks
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </x-app-layout>

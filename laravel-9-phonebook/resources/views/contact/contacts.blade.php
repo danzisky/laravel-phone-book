@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 w3-container">
             
             <?php
             $phonebook = $phonebook;
@@ -15,7 +15,6 @@
             
             $link = route('phonebook', ['id' => $phonebook['id']]);
 
-            echo '<div class="w3-xxlarge w3-panel">Logged in as '.$user['name'].'</div>';
             echo '<div class="w3-xlarge w3-panel">'.$phonebook['phonebook_name'].': Added Contacts</div>';
 
             echo '<div class="w3-large w3-panel"><div>To share this phonebook, use this link</div>';
@@ -23,7 +22,7 @@
 
             echo '<div class="w3-margin-bottom"><a href="'. route('phonebooks.contacts.create', ['phonebook' => $phonebook['id']]).'"><input class="w3-btn w3-green w3-center w3-margin-top" name="submit" type="submit" value="CREATE NEW CONTACT"/></a></div>';
 
-            echo '<a href="'.route('phonebooks.index').'"><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOKS</button></a>';
+            echo '<a href="'.route('phonebooks.index').'" class=""><button  class="w3-medium w3-button w3-gray w3-margin-top w3-margin-bottom">BACK TO PHONEBOOKS</button></a>';
             echo '<br>';
             
             if(empty($contacts) || is_null($contacts)) {
@@ -32,31 +31,35 @@
 
             foreach ($contacts as $contact) {
                 ?>
-                <a href="{{ route('contacts.show', ['contact' => $contact['id']]) }}"/>
-                    @csrf
-                    <button value="<?php echo $contact['id']; ?>" class="w3-button w3-light-grey w3-left-align">
-                        <div><h3><?php echo $contact['first_name']." ".$contact['last_name']; ?></h3></div>
-                        <div><h5><?php echo isset($contact['email']) ? "E-mail: ".$contact['email'] : ""; ?></h5></div>
-                        <div><h5><?php echo isset($contact['phone']) ? "Mobile Number: ".$contact['phone'] : ""; ?></h5></div>
-                    </button>
-                </a>
-                <div>
-                    <form action="{{ route('contacts.edit', ['contact' => $contact['id']]) }}" method="GET" class="w3-form"/>
-                        @csrf
-                        <button value="<?php echo $contact['id']; ?> " class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>
-                    </form>
-                    <div class="w3-form"/>
-                        <button id="<?php echo 'hide'.$contact['id']; ?>" value="1" contact_id="<?php echo $contact['id']; ?>" user_id="<?php echo $contact['user_id']; ?>" class="w3-button w3-green w3-left-align visible w3-margin-bottom" style="<?php echo ($contact['hidden'] != "1" ? '' : 'display:none;'); ?>" onclick="hide(this)">HIDE</button>
+                <div class=" w3-padding w3-row-padding w3-white w3-margin-bottom w3-leftbar w3-border-gray">
+                        <div class="w3-col s12 m7 w3-white w3-row">
+                            <a href="{{ route('contacts.show', ['contact' => $contact['id']]) }}"/>
+                                @csrf
+                                <button value="<?php echo $contact['id']; ?>" class="w3-button w3-col s12 w3-light-grey w3-left-align">
+                                    <div><h3><?php echo $contact['first_name']." ".$contact['last_name']; ?></h3></div>
+                                    <div><h5><?php echo isset($contact['email']) ? "E-mail: ".$contact['email'] : ""; ?></h5></div>
+                                    <div><h5><?php echo isset($contact['phone']) ? "Mobile Number: ".$contact['phone'] : ""; ?></h5></div>
+                                </button>
+                            </a>
+                        </div>
+                    <div class="w3-row-padding w3-col s12 m5 w3-margin-top">
+                        <form action="{{ route('contacts.edit', ['contact' => $contact['id']]) }}" method="GET" class="w3-col s3 m12">
+                            @csrf
+                            <button value="<?php echo $contact['id']; ?> " class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>
+                        </form>
+                        <div class="w3-col s3 m12">
+                            <button id="<?php echo 'hide'.$contact['id']; ?>" value="1" contact_id="<?php echo $contact['id']; ?>" user_id="<?php echo $contact['user_id']; ?>" class="w3-button w3-green w3-left-align visible w3-margin-bottom" style="<?php echo ($contact['hidden'] != "1" ? '' : 'display:none;'); ?>" onclick="hide(this)">HIDE</button>
 
-                        <button id="<?php echo 'show'.$contact['id']; ?>" value="0" contact_id="<?php echo $contact['id']; ?>"  user_id="<?php echo $contact['user_id']; ?>" class="w3-button w3-yellow w3-left-align private w3-margin-bottom" style="<?php echo ($contact['hidden'] == "1" ? '' : 'display:none;'); ?>" onclick="show(this)">UNHIDE</button>
+                            <button id="<?php echo 'show'.$contact['id']; ?>" value="0" contact_id="<?php echo $contact['id']; ?>"  user_id="<?php echo $contact['user_id']; ?>" class="w3-button w3-yellow w3-left-align private w3-margin-bottom" style="<?php echo ($contact['hidden'] == "1" ? '' : 'display:none;'); ?>" onclick="show(this)">UNHIDE</button>
+                        </div>
+                        <form action="{{ route('contacts.destroy', ['contact' => $contact['id']]) }}" method="POST" class="w3-col s3 m12">
+                            @csrf
+                            @method('delete')
+                            <button name="delete" type="submit" value="<?php echo $contact['id']; ?>" class="w3-button w3-red w3-left-align">
+                                DELETE
+                            </button>
+                        </form>
                     </div>
-                    <form action="{{ route('contacts.destroy', ['contact' => $contact['id']]) }}" method="POST" class="w3-form"/>
-                        @csrf
-                        @method('delete')
-                        <button name="delete" type="submit" value="<?php echo $contact['id']; ?>" class="w3-button w3-red w3-left-align">
-                            DELETE
-                        </button>
-                    </form>
                 </div>
                 <hr>
 

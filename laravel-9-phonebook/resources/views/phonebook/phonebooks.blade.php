@@ -6,14 +6,12 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 w3-container">
             
             <?php
             $phonebooks = $phonebooks;
-            
 
-            echo '<div class="w3-xxlarge w3-panel">Welcome '.$user['name'].'</div>';
-            echo '<div class="w3-xlarge w3-panel">your phonebooks</div>';
+            echo '<div class="w3-xlarge w3-panel">Your phonebooks</div>';
 
             if(empty($phonebooks) || is_null($phonebooks)) {
                 echo '<div class="w3-medium w3-panel w3-center">No Phone Book created yet</div>';
@@ -22,11 +20,11 @@
 
             foreach ($phonebooks as $phonebook) {
                 ?>
-                <div class=" w3-padding w3-row-padding w3-white w3-margin-bottom">
-                    <div class="w3-col s12 m4 w3-white w3-row">
+                <div class=" w3-padding w3-row-padding w3-white w3-margin-bottom w3-leftbar w3-border-gray">
+                    <div class="w3-col s12 m7 w3-white w3-row">
                         <a href="{{ route('phonebooks.contacts.index', ['phonebook' => $phonebook['id']]) }}" method="GET" class="w3-col s12"/>
                             @csrf
-                            <button value="<?php echo $phonebook['id']; ?> " class="w3-button w3-light-grey w3-left-align">
+                            <button value="<?php echo $phonebook['id']; ?> " class="w3-button w3-col s12 w3-light-grey w3-left-align">
                                 <div><h3><?php echo $phonebook['phonebook_name']; ?></h3></div>
                                 <div><h5><?php echo $phonebook['phonebook_description']; ?></h5></div>
                                 
@@ -36,11 +34,11 @@
                         </a>
                         <div class="w3-col s12 w3-small w3-margin w3-text-hover-blue w3-text-blue"><a href="<?php echo route('phonebook', ['id' => $phonebook['id']]); ?>" target="_blank">VIEW PHONEBOOK THROUGH LINK</a></div>
                     </div>
-                    <div class="w3-row-padding w3-col s12 m8">
-                        <form action="{{ route('phonebooks.edit', ['phonebook' => $phonebook['id']]) }}" method="GET" class="w3-col s12 m4"/>
+                    <div class="w3-row-padding w3-col s12 m5">
+                        <form action="{{ route('phonebooks.edit', ['phonebook' => $phonebook['id']]) }}" method="GET" class="w3-col s4 m12"/>
                             <button type="submit" class="w3-button w3-grey w3-left-align w3-margin-bottom">EDIT</button>
                         </form>
-                        <div class="share<?php echo $phonebook['id']; ?> w3-col s12 m4" name="<?php echo $phonebook['id']; ?>" id="<?php echo $phonebook['id']; ?>">
+                        <div class="share<?php echo $phonebook['id']; ?> w3-col s4 m12" name="<?php echo $phonebook['id']; ?>" id="<?php echo $phonebook['id']; ?>">
                             @csrf
                             <button id="<?php echo 'makeprivate'.$phonebook['id']; ?>" value="1" pb_id="<?php echo $phonebook['id']; ?>" user_id="<?php echo $phonebook['user_id']; ?>" class="w3-button w3-green w3-left-align public w3-margin-bottom" style="<?php echo ($phonebook['public'] == "1" ? '' : 'display:none;'); ?>" onclick="makePrivate(this)">MAKE PRIVATE</button>
 
@@ -49,7 +47,7 @@
                             <input name='phonebook_id' hidden type="hidden" value="<?php echo $phonebook['id']; ?>" />
                             <input name='user_id' hidden type="hidden" value="<?php echo $user['id']; ?>" />
                         </div>
-                        <form action="{{ route('phonebooks.destroy', ['phonebook' => $phonebook['id']]) }}" method="POST" class="w3-form w3-col s12 m4"/>
+                        <form action="{{ route('phonebooks.destroy', ['phonebook' => $phonebook['id']]) }}" method="POST" class="w3-form w3-col s4 m12"/>
                             @csrf
                             @method('delete')
                             <button name="delete" type="submit" value="<?php echo $phonebook['id']; ?> " class="w3-button w3-red w3-left-align">
